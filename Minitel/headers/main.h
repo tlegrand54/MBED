@@ -2,8 +2,9 @@
 #define MAIN_H
 
 #include "mbed.h"
-#include "PololuQik2/PololuQik2.h"
-#include "SRF08/SRF08.h"
+
+#include "PololuQik2.h"
+#include "SRF08.h"
 #include "Minitel.h"
 
 /* #####################  AUTRES DEFINE  ############################ */

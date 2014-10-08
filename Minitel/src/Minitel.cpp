@@ -1,5 +1,4 @@
 #include "Minitel.h"
-#include "PololuQik2/PololuQik2.h"
 
 Minitel::Minitel(PinName TxPin, PinName RxPin, PinName ResetPin, PinName ErrorPin) : qik(TxPin, RxPin, ResetPin, ErrorPin, NULL, true)
 {

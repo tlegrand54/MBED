@@ -1,7 +1,7 @@
 #ifndef MINITEL_H_
 #define MINITEL_H_
 
-#include "PololuQik2/PololuQik2.h"
+#include "PololuQik2.h"
 #include "mbed.h"
 
 #define AMOTEURD 27
