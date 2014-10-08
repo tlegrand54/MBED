@@ -1,5 +1,6 @@
 #include <mbed.h>
-#include "MaxbotixDriver/sonar.h"
+
+#include "sonar.h"
 
 #define pinPW p7
 
