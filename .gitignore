@@ -3,3 +3,5 @@ LPC*
 *.elf
 *.hex
 html
+#*.*#
+.*~
