@@ -30,7 +30,7 @@ void Minitel::trackLine(double rate,int sensorRight,int sensorLeft)
     }
 
     /*
-     * Tourne à gauche
+     * Tourne a gauche
      */
     if(!sensorRight)
     {
@@ -43,7 +43,7 @@ void Minitel::trackLine(double rate,int sensorRight,int sensorLeft)
     }
 
     /*
-     * Troune à droite
+     * Troune adroite
      */
     if(!sensorLeft)
     {
