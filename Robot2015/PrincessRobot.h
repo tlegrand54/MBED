@@ -1,7 +1,9 @@
 #pragma once
 
 #include "configuration.h"
+
 #include "ColorSide.h"
+#include "ProximitySensor.h"
 
 class PrincessRobot {
 
@@ -23,22 +25,19 @@ public:
 	void setRotation(float angle, bool block = false);
 	void deployRedCarpet();
 
+	bool detectFrontOpponent();
+	bool detectBackOpponent();
+
 	void terminate();
 
-	inline void setColorSide(ColorSide::Type colorSide) {
-		this->colorSide = colorSide;
-	}
-
 private:
-	SRF08 backSensor; // SRF08 ranging module 1 capteur arrière
-	SRF08 leftSensor; // SRF08 ranging module 2 capteur gauche
-	SRF08 rightSensor; // SRF08 ranging module 3 capteur droit
+	ProximitySensor backSensor; // SRF08 ranging module 1 capteur arrière
+	ProximitySensor leftSensor; // SRF08 ranging module 2 capteur gauche
+	ProximitySensor rightSensor; // SRF08 ranging module 3 capteur droit
 
 	AX12 directionController; // Permet de contrôler l'AX12 pour faire la direction du robot
 
 	VNH5019 motor; // Permet de contrôler le moteur
-
-	ColorSide::Type colorSide;
 
 	// True if carpet already deployed
 	// TODO

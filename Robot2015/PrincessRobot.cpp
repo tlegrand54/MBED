@@ -37,6 +37,14 @@ void PrincessRobot::setRotation(float angle, bool block) {
 	directionController.setGoalPosition(angle, block);
 }
 
+bool PrincessRobot::detectFrontOpponent() {
+	return leftSensor.detectOpponent() || rightSensor.detectOpponent();
+}
+
+bool PrincessRobot::detectBackOpponent() {
+	return backSensor.detectOpponent();
+}
+
 void PrincessRobot::deployRedCarpet() {
 	// TODO
 }
