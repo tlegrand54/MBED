@@ -7,57 +7,36 @@
  * 	Objectif:	Code principal du robot princess'botik		*
  * 															*	
  ************************************************************/
-#include "configuration.h"
 
-SRF08 ultraArr(SDA, SCL, 0xE2); 			// SRF08 ranging module 1 capteur arrière
-SRF08 ultraG(SDA, SCL, 0xE4); 				// SRF08 ranging module 2 capteur gauche
-SRF08 ultraD(SDA, SCL, 0xE6); 				// SRF08 ranging module 3 capteur droit
+#include "PrincessMatchIA.h"
 
-AX12 ax(PIN_TX,PIN_RX,ID,BAUD);				// Permet de contrôler l'AX12 pour faire la direction du robot
+const static int MATCH_TIME = 87;
 
-Timer timeEndMatch; 						// Permet de connaître le temps du match
+void processIA(AbstractIA& ia) {
+	Match* match = new Match(MATCH_TIME);
 
-VNH5019 motor(PIN_INA,PIN_INB,PIN_ENDIAG,PIN_CS,PIN_PWM); // Permet de contrôler le moteur
+	// IA Init
+	ia.init();
 
-DigitalOut tiretteOut(PIN_TIRETTE_OUT); 	
-DigitalOut buttonOut(PIN_COULEUR_OUT);		
+	// Wait for match to be ready
+	match->waitStart();
 
-DigitalIn tiretteIn(PIN_TIRETTE_IN);		// Permet de connaître si le match est lancé si on a 0 le match n'est pas lancé sinon il l'est
-DigitalIn buttonIn(PIN_COULEUR_IN);			// Permet de connaître sa couleur si on a 0 on est jaune sinon on est vert
+	// Init start
+	ia.start(match);
 
-int main(void){
-	int distanceGauche[TAILLE_MAX] = {0};			// Tableau permettant de connaître la distance avec l'obstacle
-	int distanceDroit[TAILLE_MAX] = {0};
-	int distanceArr[TAILLE_MAX] = {0};
-
-	printf("\rMise à 0 de la position");
-
-	ax.setGoalPosition(0);
-
-	/*tiretteOut = 1; // On envoie 1 pour savoir si on a la tirette ou non
-	buttonOut = 1;	// On envoie pour savoir dans quelle couleur on est
-	
-	while(tiretteIn){
-		; // On attend que la tirette soit enlevé
+	// Match loop
+	while(!match->isEnd()) {
+		ia.run();
 	}
 
-	timeEndMatch.start();
+	// End of match
+	ia.end();
+	delete match;
+	exit(0);
+}
 
-	while(timeEndMatch.read() < 89){
+int main(void) {
+	PrincessMatchIA ia;
 
-
-	}*/
-		/*
-	printf("mise en route des moteurs\n");
-	motor.speed(0.1);
-	*/
-	wait(1);
-
-	printf("stop les moteurs\n");
-	// motor.stop();		// On est à la fin du match on stop le robot
-
-
-	// timeEndMatch.stop(); // On stop le chronomètre
-	
-	exit(1);
+	processIA(ia);
 }
