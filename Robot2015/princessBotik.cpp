@@ -8,35 +8,35 @@
  * 															*	
  ************************************************************/
 
-#include "PrincessMatchIA.h"
+#include "PrincessMatchAI.h"
 
 const static int MATCH_TIME = 87;
 
-void processIA(AbstractIA& ia) {
+void processAI(AbstractAI& AI) {
 	Match* match = new Match(MATCH_TIME);
 
-	// IA Init
-	ia.init();
+	// AI Init
+	AI.init();
 
 	// Wait for match to be ready
 	match->waitStart();
 
 	// Init start
-	ia.start(match);
+	AI.start(match);
 
 	// Match loop
 	while(!match->isEnd()) {
-		ia.run();
+		AI.run();
 	}
 
 	// End of match
-	ia.end();
+	AI.end();
 	delete match;
 	exit(0);
 }
 
 int main(void) {
-	PrincessMatchIA ia;
+	PrincessMatchAI AI;
 
-	processIA(ia);
+	processAI(AI);
 }
