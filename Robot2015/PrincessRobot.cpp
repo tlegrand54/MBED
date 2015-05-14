@@ -8,7 +8,7 @@ PrincessRobot::PrincessRobot() :
 	leftSensor(SDA, SCL, LEFT_SENSOR_ADDRESS),
 	rightSensor(SDA, SCL, RIGHT_SENSOR_ADDRESS),
 	directionController(PIN_TX,PIN_RX,ID,BAUD), // ax
-	motor(PIN_INA,PIN_INB,PIN_ENDIAG,PIN_CS,PIN_PWM)
+	motor(PIN_INA,PIN_INB,PIN_PWM)
 {
 	this->init();
 }
@@ -22,7 +22,7 @@ void PrincessRobot::init() {
 	directionController.setCWLimit(0);
 	directionController.setCCWLimit(300);
 	std::cout << "\rMise à 0 de la position" << std::endl;
-	directionController.setGoalSpeed(0);
+	directionController.setGoalPosition(0);
 }
 
 void PrincessRobot::setMoveSpeed(float speed) {
