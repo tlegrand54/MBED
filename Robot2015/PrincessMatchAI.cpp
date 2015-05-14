@@ -1,7 +1,8 @@
 #include "PrincessMatchAI.h"
 
 PrincessMatchAI::PrincessMatchAI() : AbstractAI(),
-  robot()
+  robot(),
+  currentStep(FORWARD)
 {
 
 }
@@ -17,16 +18,34 @@ void PrincessMatchAI::init() {
 
 void PrincessMatchAI::start(Match* match) {
 	this->match = match;
-	stepTimer.start();
+	currentStep.start();
+
+	// The angle depends on our color team
+	switch (match->getRobotColor()) {
+	case ColorSide::Type::YELLOW:
+		rotateAngle = -ROTATE_ANGLE; // Left
+		break;
+	case ColorSide::Type::GREEN:
+		rotateAngle = ROTATE_ANGLE; // Right
+		break;
+	default:
+		break;
+	}
 }
 
 void PrincessMatchAI::run() {
-	switch(currentStep) {
+	switch(currentStep.getState()) {
 	case AIStep::FORWARD:
 		processForward();
 		break;
-	case AIStep::TURN:
-		processTurn();
+	case AIStep::START_ROTATE:
+		processStartRotate();
+		break;
+	case AIStep::ROTATE:
+		processRotate();
+		break;
+	case AIStep::END_ROTATE:
+		processEndRotate();
 		break;
 	case AIStep::STARES:
 		processStares();
@@ -44,93 +63,96 @@ void PrincessMatchAI::end() {
 
 }
 
-bool PrincessMatchAI::isStepAccomplished(int maxTime) {
-	return stepTimer.read_ms() >= maxTime;
-}
-
-void PrincessMatchAI::changeStep(PrincessMatchAI::AIStep step) {
-	// Reset timer
-	stepTimer.stop();
-	stepTimer.reset();
-
-	// Change step
-	currentStep = step;
-
-	// Start timer
-	stepTimer.start();
-}
-
 void PrincessMatchAI::processForward() {
 	// Check if an opponent is in front of us
 	if(robot.detectFrontOpponent()) {
 		robot.brake(1);
-		stepTimer.stop();
+		currentStep.pause();
 	}
 	else {
 		// Move forward during FORWARD_TIME
-	    stepTimer.start(); // Do nothing if already started
+	    currentStep.start(); // Do nothing if already started
 		robot.setMoveSpeed(1);
 	}
 	// Check if step is accomplished
-	if (isStepAccomplished(FORWARD_TIME)) {
-		changeStep(AIStep::TURN);
+	if (currentStep.isFinished(FORWARD_TIME)) {
+		currentStep.change(AIStep::START_ROTATE);
 	}
 }
 
-void PrincessMatchAI::processTurn() {
-	// The angle depends on our color team
-	float angle = 0.0f;
-	switch (match->getRobotColor()) {
-	case ColorSide::Type::YELLOW:
-		angle = -90; // Left
-		break;
-	case ColorSide::Type::GREEN:
-		angle = 90; // Right
-		break;
-	default:
-		break;
+void PrincessMatchAI::processStartRotate() {
+	// No speed when turning
+	robot.setMoveSpeed(0);
+
+	// Set rotation angle;
+	robot.setRotation(robot.getRotation() + rotateAngle, true);
+
+	currentStep.change(AIStep::ROTATE);
+}
+
+void PrincessMatchAI::processRotate() {
+	// Check if an opponent is in front of us
+	if(robot.detectFrontOpponent()) {
+		robot.brake(1);
+		currentStep.pause();
+		return;
 	}
 
-	// Rotate (blocking state) the robot
-	robot.setRotation(angle);
-	changeStep(AIStep::STARES);
+	// End of rotate
+	if(currentStep.isFinished(ROTATE_TIME)) {
+		currentStep.change(AIStep::END_ROTATE);
+		return;
+	}
+
+	// Just go on
+	robot.setMoveSpeed(0.5);
+}
+
+void PrincessMatchAI::processEndRotate() {
+	// No speed when turning
+	robot.setMoveSpeed(0);
+
+	// Set rotation angle;
+	robot.setRotation(robot.getRotation() - rotateAngle, true);
+
+	currentStep.change(AIStep::STARES);
 }
 
 void PrincessMatchAI::processStares() {
 	// Check if an opponent is in front of us
 	if(robot.detectFrontOpponent()) {
 		robot.brake(1);
-		stepTimer.stop();
+		currentStep.pause();
 	}
 	else {
 		// Move forward during STARES_TIME
-	    stepTimer.start(); // Do nothing if already started
+	    currentStep.start(); // Do nothing if already started
 		robot.setMoveSpeed(1);
 	}
 	// Check if step is accomplished
-	if (isStepAccomplished(STARES_TIME)) {
-		changeStep(AIStep::CARPET);
+	if (currentStep.isFinished(STARES_TIME)) {
+		currentStep.change(AIStep::CARPET);
 	}
 }
 
 void PrincessMatchAI::processCarpet() {
 	// TODO
-	changeStep(AIStep::END);
+	currentStep.change(AIStep::END);
 }
 
 void PrincessMatchAI::processEnd() {
 	// Check if an opponent is in front of us
 	if(robot.detectFrontOpponent()) {
 		robot.brake(1);
-		stepTimer.stop();
+		currentStep.pause();
 	}
 	else {
 		// Move forward during END_TIME
-	    stepTimer.start(); // Do nothing if already started
+	    currentStep.start(); // Do nothing if already started
 		robot.setMoveSpeed(1);
 	}
 	// Check if step is accomplished
-	if (isStepAccomplished(END_TIME)) {
+	if (currentStep.isFinished(END_TIME)) {
 		// Lolilol, we finished with a dance! :)
 		robot.setRotation(-180, true);
 		robot.setRotation(180, true);

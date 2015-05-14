@@ -30,6 +30,14 @@ public:
 
 	void terminate();
 
+	inline float getRotation() {
+		return lastAngle;
+	}
+
+	inline float getMoveSpeed() {
+		return lastSpeed;
+	}
+
 private:
 	ProximitySensor backSensor; // SRF08 ranging module 1 capteur arrière
 	ProximitySensor leftSensor; // SRF08 ranging module 2 capteur gauche
@@ -38,6 +46,9 @@ private:
 	AX12 directionController; // Permet de contrôler l'AX12 pour faire la direction du robot
 
 	VNH5019 motor; // Permet de contrôler le moteur
+
+	float lastAngle = 0;
+	float lastSpeed = 0;
 
 	// True if carpet already deployed
 	// TODO

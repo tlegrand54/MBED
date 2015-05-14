@@ -8,7 +8,7 @@
  * 															*	
  ************************************************************/
 
-#include "TestAI.h"
+#include "PrincessMatchAI.h"
 
 const static int MATCH_TIME = 87;
 
@@ -44,7 +44,7 @@ void processAI(AbstractAI& ai) {
 }
 
 int main(void) {
-	TestAI ai;
+	PrincessMatchAI ai;
 
 	processAI(ai);
 }

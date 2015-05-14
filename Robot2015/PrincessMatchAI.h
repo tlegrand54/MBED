@@ -8,15 +8,21 @@
 #include "Match.h"
 #include "Timer.h"
 
+#include "Step.h"
+
 class PrincessMatchAI : public AbstractAI {	
 public:
 	enum AIStep {
 		FORWARD,
-		TURN,
+		START_ROTATE,
+		ROTATE,
+		END_ROTATE,
 		STARES,
 		CARPET,
 		END
 	};
+
+	const int ROTATE_ANGLE = 50;
 
 	PrincessMatchAI();
 	~PrincessMatchAI();
@@ -28,21 +34,22 @@ public:
 
 private:
 	const int FORWARD_TIME = 5000; // In msec
+	const int ROTATE_TIME = 3000;
 	const int STARES_TIME = 4000;
 	const int END_TIME = 4000;
 
 	PrincessRobot robot;
 	Match* match;
 
-	PrincessMatchAI::AIStep currentStep = FORWARD;
-	Timer stepTimer;
+	Step<AIStep> currentStep;
+
+	int rotateAngle = 0;
 
 	void processForward();
-	void processTurn();
+	void processStartRotate();
+	void processRotate();
+	void processEndRotate();
 	void processStares();
 	void processCarpet();
 	void processEnd();
-
-	bool isStepAccomplished(int maxTime);
-	void changeStep(PrincessMatchAI::AIStep step);
 };

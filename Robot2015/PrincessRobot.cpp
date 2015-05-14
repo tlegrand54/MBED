@@ -4,9 +4,9 @@
 #include <iostream>
 
 PrincessRobot::PrincessRobot() :
-	backSensor(SDA, SCL, BACK_SENSOR_ADDRESS),
-	leftSensor(SDA, SCL, LEFT_SENSOR_ADDRESS),
-	rightSensor(SDA, SCL, RIGHT_SENSOR_ADDRESS),
+	backSensor(SDA, SCL, BACK_SENSOR_ADDRESS, 25),
+	leftSensor(SDA, SCL, LEFT_SENSOR_ADDRESS, 25),
+	rightSensor(SDA, SCL, RIGHT_SENSOR_ADDRESS, 25),
 	directionController(PIN_TX,PIN_RX,ID,BAUD), // ax
 	motor(PIN_INA,PIN_INB,PIN_PWM)
 {
@@ -22,11 +22,12 @@ void PrincessRobot::init() {
 	directionController.setCWLimit(0);
 	directionController.setCCWLimit(300);
 	std::cout << "\rMise à 0 de la position" << std::endl;
-	directionController.setGoalPosition(0);
+	setRotation(0);
 }
 
 void PrincessRobot::setMoveSpeed(float speed) {
 	motor.speed(speed);
+	lastSpeed = speed;
 }
 
 void PrincessRobot::brake(float strength) {
@@ -35,6 +36,7 @@ void PrincessRobot::brake(float strength) {
 
 void PrincessRobot::setRotation(float angle, bool block) {
 	directionController.setGoalPosition(angle, block);
+	lastAngle = angle;
 }
 
 bool PrincessRobot::detectFrontOpponent() {
