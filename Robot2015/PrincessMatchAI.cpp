@@ -11,12 +11,17 @@ PrincessMatchAI::~PrincessMatchAI() {
 
 }
 
+void PrincessMatchAI::log(std::string msg) {
+	int time = match == nullptr ? 0 : match->getCurrentTime();
+    printf("[%i] %s\n\r",time, msg.c_str());
+}
 
 void PrincessMatchAI::init() {
-
+	log("=== INIT ===");
 }
 
 void PrincessMatchAI::start(Match* match) {
+	log("=== START MATCH! ===");
 	this->match = match;
 	currentStep.start();
 
@@ -31,6 +36,7 @@ void PrincessMatchAI::start(Match* match) {
 	default:
 		break;
 	}
+	log("=> FORWARD");
 }
 
 void PrincessMatchAI::run() {
@@ -60,7 +66,7 @@ void PrincessMatchAI::run() {
 }
 
 void PrincessMatchAI::end() {
-
+	log("=== END ===");
 }
 
 void PrincessMatchAI::processForward() {
@@ -76,6 +82,7 @@ void PrincessMatchAI::processForward() {
 	}
 	// Check if step is accomplished
 	if (currentStep.isFinished(FORWARD_TIME)) {
+		log("=> START_ROTATE");
 		currentStep.change(AIStep::START_ROTATE);
 	}
 }
@@ -88,6 +95,8 @@ void PrincessMatchAI::processStartRotate() {
 	robot.setRotation(robot.getRotation() + rotateAngle, true);
 
 	currentStep.change(AIStep::ROTATE);
+
+	log("=> ROTATE");
 }
 
 void PrincessMatchAI::processRotate() {
@@ -101,6 +110,7 @@ void PrincessMatchAI::processRotate() {
 	// End of rotate
 	if(currentStep.isFinished(ROTATE_TIME)) {
 		currentStep.change(AIStep::END_ROTATE);
+		log("=> END_ROTATE");
 		return;
 	}
 
@@ -116,6 +126,8 @@ void PrincessMatchAI::processEndRotate() {
 	robot.setRotation(robot.getRotation() - rotateAngle, true);
 
 	currentStep.change(AIStep::STARES);
+
+	log("=> STARES");
 }
 
 void PrincessMatchAI::processStares() {
@@ -132,12 +144,14 @@ void PrincessMatchAI::processStares() {
 	// Check if step is accomplished
 	if (currentStep.isFinished(STARES_TIME)) {
 		currentStep.change(AIStep::CARPET);
+		log("=> CARPET");
 	}
 }
 
 void PrincessMatchAI::processCarpet() {
 	// TODO
 	currentStep.change(AIStep::END);
+	log("=> END");
 }
 
 void PrincessMatchAI::processEnd() {
@@ -157,4 +171,5 @@ void PrincessMatchAI::processEnd() {
 		robot.setRotation(-180, true);
 		robot.setRotation(180, true);
 	}
+	log("=> All done, robot is now in a unstate mode.");
 }

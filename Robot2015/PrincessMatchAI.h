@@ -10,6 +10,8 @@
 
 #include "Step.h"
 
+#include <string>
+
 class PrincessMatchAI : public AbstractAI {	
 public:
 	enum AIStep {
@@ -26,6 +28,8 @@ public:
 
 	PrincessMatchAI();
 	~PrincessMatchAI();
+
+	void log(std::string msg);
 
 	void init();
 	void start(Match* match);
