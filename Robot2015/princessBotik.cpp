@@ -17,47 +17,61 @@ AX12 ax(PIN_TX,PIN_RX,ID,BAUD);				// Permet de contrôler l'AX12 pour faire la 
 
 Timer timeEndMatch; 						// Permet de connaître le temps du match
 
-VNH5019 motor(PIN_INA,PIN_INB,PIN_ENDIAG,PIN_CS,PIN_PWM); // Permet de contrôler le moteur
+//VNH5019 motor(PIN_INA,PIN_INB,PIN_ENDIAG,PIN_CS,PIN_PWM); // Permet de contrôler le moteur
 
 DigitalOut tiretteOut(PIN_TIRETTE_OUT); 	
 DigitalOut buttonOut(PIN_COULEUR_OUT);		
+
+DigitalOut ina(PIN_INA);
+DigitalOut inb(PIN_INB);
+PwmOut pwm(PIN_PWM);
 
 DigitalIn tiretteIn(PIN_TIRETTE_IN);		// Permet de connaître si le match est lancé si on a 0 le match n'est pas lancé sinon il l'est
 DigitalIn buttonIn(PIN_COULEUR_IN);			// Permet de connaître sa couleur si on a 0 on est jaune sinon on est vert
 
 int main(void){
-	int distanceGauche[TAILLE_MAX] = {0};			// Tableau permettant de connaître la distance avec l'obstacle
-	int distanceDroit[TAILLE_MAX] = {0};
-	int distanceArr[TAILLE_MAX] = {0};
+    int distanceGauche[TAILLE_MAX] = {0};			// Tableau permettant de connaître la distance avec l'obstacle
+    int distanceDroit[TAILLE_MAX] = {0};
+    int distanceArr[TAILLE_MAX] = {0};
 
-	printf("\rMise à 0 de la position");
+    printf("\rMise à 0 de la position");
 
-	ax.setGoalPosition(0);
+    ax.setGoalPosition(0);
 
-	/*tiretteOut = 1; // On envoie 1 pour savoir si on a la tirette ou non
-	buttonOut = 1;	// On envoie pour savoir dans quelle couleur on est
-	
-	while(tiretteIn){
-		; // On attend que la tirette soit enlevé
-	}
+    tiretteOut = 1; // On envoie 1 pour savoir si on a la tirette ou non
+    buttonOut = 1;	// On envoie pour savoir dans quelle couleur on est
 
-	timeEndMatch.start();
+    wait(5);
 
-	while(timeEndMatch.read() < 89){
+    ina = 1;
 
+    inb = 0;
 
-	}*/
-		/*
-	printf("mise en route des moteurs\n");
-	motor.speed(0.1);
-	*/
-	wait(1);
+    pwm = 0.1;
 
-	printf("stop les moteurs\n");
-	// motor.stop();		// On est à la fin du match on stop le robot
+    /*while(tiretteIn){
+        ; // On attend que la tirette soit enlevé
+    }*/
+
+    //timeEndMatch.start();
+
+   /* while(timeEndMatch.read() < 89){
 
 
-	// timeEndMatch.stop(); // On stop le chronomètre
-	
-	exit(1);
+    }
+    */
+
+    wait(5);
+
+    ax.setGoalPosition(300);
+    printf("mise en route des moteurs\n");
+      
+    wait(5);
+
+    printf("stop les moteurs\n");
+
+    pwm = 0;
+    // timeEndMatch.stop(); // On stop le chronomètre
+
+    exit(0);
 }
