@@ -22,7 +22,7 @@ void PrincessRobot::init() {
 	directionController.setCWLimit(0);
 	directionController.setCCWLimit(300);
 	std::cout << "\rMise à 0 de la position" << std::endl;
-	setRotation(0);
+	setRotation(ANGLE_OFFSET);
 }
 
 void PrincessRobot::setMoveSpeed(float speed) {
@@ -35,7 +35,7 @@ void PrincessRobot::brake(float strength) {
 }
 
 void PrincessRobot::setRotation(float angle, bool block) {
-	directionController.setGoalPosition(angle, block);
+	directionController.setGoalPosition(angle + ANGLE_OFFSET, block);
 	lastAngle = angle;
 }
 

@@ -12,6 +12,8 @@ public:
 	const int LEFT_SENSOR_ADDRESS = 0xE4;
 	const int RIGHT_SENSOR_ADDRESS = 0xE6;
 
+	const int ANGLE_OFFSET = 38;
+
 	PrincessRobot();
 	~PrincessRobot();
 
