@@ -8,6 +8,8 @@
  *				du robot (numéro de pin, bibliothèque)		*
  * 															*	
  ************************************************************/
+ #pragma once
+ 
 #include "mbed.h"
 #include "AX12Mbed.h"
 #include "VNH5019.h"
