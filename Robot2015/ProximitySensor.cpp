@@ -30,5 +30,6 @@ bool ProximitySensor::detectOpponent() {
 int ProximitySensor::mesureOpponentDistance() {
 	sensor.startRanging();
 	while (!sensor.rangingFinished()) wait(0.01);
+	printf("\n\rDEBUG sensor distance => %i", sensor.getRange());
 	return sensor.getRange();
 }

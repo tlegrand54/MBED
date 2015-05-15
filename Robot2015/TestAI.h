@@ -17,6 +17,8 @@ public:
 	~TestAI();
 
 private:
+	void defaultRun();
+
 	PrincessRobot robot;
 	Match *match;
 };

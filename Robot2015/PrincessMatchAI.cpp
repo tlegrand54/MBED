@@ -2,7 +2,7 @@
 
 PrincessMatchAI::PrincessMatchAI() : AbstractAI(),
   robot(),
-  currentStep(FORWARD)
+  currentStep(AIStep::NONE)
 {
 
 }
@@ -28,15 +28,16 @@ void PrincessMatchAI::start(Match* match) {
 	// The angle depends on our color team
 	switch (match->getRobotColor()) {
 	case ColorSide::Type::YELLOW:
-		rotateAngle = -ROTATE_ANGLE; // Left
+		rotateAngle = ROTATE_ANGLE; // Left
 		break;
 	case ColorSide::Type::GREEN:
-		rotateAngle = ROTATE_ANGLE; // Right
+		rotateAngle = -ROTATE_ANGLE; // Right
 		break;
 	default:
 		break;
 	}
 	log("=> FORWARD");
+	currentStep.change(AIStep::FORWARD);
 }
 
 void PrincessMatchAI::run() {
@@ -44,14 +45,8 @@ void PrincessMatchAI::run() {
 	case AIStep::FORWARD:
 		processForward();
 		break;
-	case AIStep::START_ROTATE:
-		processStartRotate();
-		break;
 	case AIStep::ROTATE:
 		processRotate();
-		break;
-	case AIStep::END_ROTATE:
-		processEndRotate();
 		break;
 	case AIStep::STARES:
 		processStares();
@@ -61,6 +56,9 @@ void PrincessMatchAI::run() {
 		break;
 	case AIStep::END:
 		processEnd();
+		break;
+	default:
+		robot.setMoveSpeed(0);
 		break;
 	}
 }
@@ -74,29 +72,17 @@ void PrincessMatchAI::processForward() {
 	if(robot.detectFrontOpponent()) {
 		robot.brake(1);
 		currentStep.pause();
+		return;
 	}
-	else {
-		// Move forward during FORWARD_TIME
-	    currentStep.start(); // Do nothing if already started
-		robot.setMoveSpeed(1);
-	}
+	// Move forward during FORWARD_TIME
+    currentStep.start(); // Do nothing if already started
+	robot.setMoveSpeed(MAX_SPEED);
+
 	// Check if step is accomplished
 	if (currentStep.isFinished(FORWARD_TIME)) {
-		log("=> START_ROTATE");
-		currentStep.change(AIStep::START_ROTATE);
+		log("=> END");
+		currentStep.change(AIStep::END);
 	}
-}
-
-void PrincessMatchAI::processStartRotate() {
-	// No speed when turning
-	robot.setMoveSpeed(0);
-
-	// Set rotation angle;
-	robot.setRotation(robot.getRotation() + rotateAngle, true);
-
-	currentStep.change(AIStep::ROTATE);
-
-	log("=> ROTATE");
 }
 
 void PrincessMatchAI::processRotate() {
@@ -106,41 +92,31 @@ void PrincessMatchAI::processRotate() {
 		currentStep.pause();
 		return;
 	}
+	currentStep.start();
 
+	// Set rotation angle
+	robot.setRotation(robot.getRotation() + rotateAngle);
+	robot.setMoveSpeed(MAX_SPEED);
+	
 	// End of rotate
 	if(currentStep.isFinished(ROTATE_TIME)) {
-		currentStep.change(AIStep::END_ROTATE);
-		log("=> END_ROTATE");
+		currentStep.change(AIStep::STARES);
+		log("=> STARES");
 		return;
 	}
-
-	// Just go on
-	robot.setMoveSpeed(0.5);
-}
-
-void PrincessMatchAI::processEndRotate() {
-	// No speed when turning
-	robot.setMoveSpeed(0);
-
-	// Set rotation angle;
-	robot.setRotation(robot.getRotation() - rotateAngle, true);
-
-	currentStep.change(AIStep::STARES);
-
-	log("=> STARES");
 }
 
 void PrincessMatchAI::processStares() {
 	// Check if an opponent is in front of us
-	if(robot.detectFrontOpponent()) {
+	if(robot.detectBackOpponent()) {
 		robot.brake(1);
 		currentStep.pause();
+		return;
 	}
-	else {
-		// Move forward during STARES_TIME
-	    currentStep.start(); // Do nothing if already started
-		robot.setMoveSpeed(1);
-	}
+	// Move backward during STARES_TIME
+    currentStep.start(); // Do nothing if already started
+	robot.setMoveSpeed(-MAX_SPEED);
+
 	// Check if step is accomplished
 	if (currentStep.isFinished(STARES_TIME)) {
 		currentStep.change(AIStep::CARPET);
@@ -156,20 +132,20 @@ void PrincessMatchAI::processCarpet() {
 
 void PrincessMatchAI::processEnd() {
 	// Check if an opponent is in front of us
-	if(robot.detectFrontOpponent()) {
+	if(robot.detectBackOpponent()) {
 		robot.brake(1);
 		currentStep.pause();
+		return;
 	}
-	else {
-		// Move forward during END_TIME
-	    currentStep.start(); // Do nothing if already started
-		robot.setMoveSpeed(1);
-	}
+	// Move forward during END_TIME
+    currentStep.start(); // Do nothing if already started
+	robot.setMoveSpeed(-MAX_SPEED);
+
 	// Check if step is accomplished
 	if (currentStep.isFinished(END_TIME)) {
 		// Lolilol, we finished with a dance! :)
-		robot.setRotation(-180, true);
-		robot.setRotation(180, true);
+		// TODO
+		log("=> All done, robot is now in a unstate mode.");
+		currentStep.change(AIStep::NONE);
 	}
-	log("=> All done, robot is now in a unstate mode.");
 }

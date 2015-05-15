@@ -20,6 +20,25 @@ void TestAI::start(Match* match) {
 }
 
 void TestAI::run() {
+
+/*
+	printf("Init rotation\r\n");
+	robot.setRotation(0);
+	wait(5);
+
+	robot.setMoveSpeed(0.7);
+
+	for(int i = -50 ; i < 50 ; i+=5) {
+		printf("Rotation: %i\r\n", i);
+		robot.setRotation(i);
+		wait(2);
+	}
+	*/
+	robot.setMoveSpeed(1);
+	robot.setRotation(0);
+}
+
+void TestAI::defaultRun() {
 	printf("\n\r\n\r=== MOTOR TESTS ===\n\r");
 
 	robot.setRotation(0);

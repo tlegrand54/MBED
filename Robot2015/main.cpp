@@ -9,6 +9,7 @@
  ************************************************************/
 
 #include "PrincessMatchAI.h"
+#include "TestAI.h"
 
 const static int MATCH_TIME = 87;
 
@@ -18,24 +19,16 @@ void processAI(AbstractAI& ai) {
 	// ai Init
 	ai.init();
 
-	printf("Fin init\n");
-
 	// Wait for match to be ready
 	match->waitStart();
 
-	printf("fin wait match\n");
-
 	// Init start
 	ai.start(match);
-
-	printf("fin start\n");
 
 	// Match loop
 	while(!match->isEnd()) {
 		ai.run();
 	}
-
-	printf("fin du match\n");
 
 	// End of match
 	ai.end();

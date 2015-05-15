@@ -15,7 +15,7 @@
 
 /** \brief MBED implementation if AX12Base
  */
-template <class SerialType=Serial>
+template <class SerialType=SerialHalfDuplex >
 class AX12Mbed : public AX12Base {
 public:
     AX12Mbed(PinName tx, PinName rx, int id, int baud = 1000000)
