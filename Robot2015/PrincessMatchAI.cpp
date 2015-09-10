@@ -59,6 +59,7 @@ void PrincessMatchAI::run() {
 		break;
 	default:
 		robot.setMoveSpeed(0);
+		robot.setRotation(0);
 		break;
 	}
 }

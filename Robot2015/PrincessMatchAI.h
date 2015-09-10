@@ -37,10 +37,10 @@ public:
 	void end();
 
 private:
-	const int FORWARD_TIME = 9000; // In msec
+	const int FORWARD_TIME = 5000; // In msec
 	const int ROTATE_TIME = 3000;
 	const int STARES_TIME = 4000;
-	const int END_TIME = 4000;
+	const int END_TIME = 1000;
 
 	PrincessRobot robot;
 	Match* match;

@@ -38,6 +38,7 @@ void processAI(AbstractAI& ai) {
 
 int main(void) {
 	PrincessMatchAI ai;
+	//TestAI ai;
 
 	processAI(ai);
 }
