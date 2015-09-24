@@ -1,3 +1,3 @@
-PROJECT=firstCode
+PROJECT=learnPlateform
 
 include $(GCC4MBED_DIR)/build/gcc4mbed.mk
